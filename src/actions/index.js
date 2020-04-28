@@ -1,4 +1,5 @@
 import { API_URL, API_KEY } from "../config";
+import { fetchMovies } from "../helpers";
 
 //action types for Home
 
@@ -6,6 +7,10 @@ export const GET_POPULAR_MOVIES = "GET_POPULAR_MOVIES";
 export const SEARCH_MOVIES = "SEARCH_MOVIES";
 export const LOAD_MORE_MOVIES = "LOAD_MORE_MOVIES";
 export const CLEAR_MOVIES = "CLEAR_MOVIES";
+
+//action types for Movie
+export const GET_MOVIE = "GET_MOVIE";
+export const CLEAR_MOVIE = "CLEAR_MOVIE";
 
 //actip types for both;
 
@@ -19,6 +24,44 @@ export function showLoadingSpinner() {
   };
 }
 
+//action creators for Movie
+export function clearMovie() {
+  return {
+    type: CLEAR_MOVIE,
+    payload: null,
+  };
+}
+
+export function getMovie(movieId) {
+  let endpoint = `${API_URL}movie/${movieId}?api_key=${API_KEY}&language=en-US`;
+  let newState = {};
+
+  const request = fetchMovies(endpoint, (result) => {
+    if (result.status_code) {
+      // If there are no movies
+      return newState;
+    } else {
+      newState = { movie: result };
+      endpoint = `${API_URL}movie/${movieId}/credits?api_key=${API_KEY}`;
+
+      return fetchMovies(endpoint, (result) => {
+        const directors = result.crew.filter(
+          (member) => member.job === "Director"
+        );
+        newState.actors = result.cast;
+        newState.directors = directors;
+
+        return newState;
+      });
+    }
+  }).catch((error) => console.error("Error:", error));
+
+  return {
+    type: GET_MOVIE,
+    payload: request,
+  };
+}
+
 //action creators for Home
 export function getPopularMovies() {
   const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
@@ -28,6 +71,7 @@ export function getPopularMovies() {
       return result;
     })
     .catch((error) => console.error("Error:", error));
+  //promise middleware works here under the hood to await with return
   return {
     type: GET_POPULAR_MOVIES,
     payload: request,
