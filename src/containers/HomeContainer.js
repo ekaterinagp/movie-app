@@ -1,38 +1,59 @@
-class Home extends Component {
-  componentDidMount() {
-    if (sessionStorage.getItem("HomeState")) {
-      let state = JSON.parse(sessionStorage.getItem("HomeState"));
-      this.setState({ ...state });
-    } else {
-      this.setState({ loading: true });
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import {
+  getPopularMovies,
+  showLoadingSpinner,
+  searchMovies,
+  clearMovies,
+  loadMoreMovies,
+} from "../actions";
 
-      this.fetchItems(endpoint);
-    }
+import Home from "../components/Home/Home";
+
+class HomeContainer extends Component {
+  componentDidMount() {
+    this.getMovies();
   }
 
-  searchItems = (searchTerm) => {
-    let endpoint = "";
-    this.setState({
-      movies: [],
-      loading: true,
-      searchTerm,
-    });
-
-    this.fetchItems(endpoint);
+  getMovies = () => {
+    this.props.showLoadingSpinner();
+    this.props.getPopularMovies();
   };
 
-  loadMoreItems = () => {
-    // ES6 Destructuring the state
-    const { searchTerm, currentPage } = this.state;
-
-    let endpoint = "";
-    this.setState({ loading: true });
-
-    this.fetchItems(endpoint);
+  searchMovies = (searchTerm) => {
+    this.props.clearMovies();
+    this.props.showLoadingSpinner();
+    this.props.searchMovies(searchTerm);
   };
 
-  fetchItems = (endpoint) => {
-    // ES6 Destructuring the state
-    const { movies, heroImage, searchTerm } = this.state;
+  loadMoreMovies = () => {
+    const { searchTerm, currentPage } = this.props;
+    this.props.showLoadingSpinner();
+    this.props.loadMoreMovies(searchTerm, currentPage);
   };
+
+  render() {
+    return (
+      <Home
+        {...this.props}
+        searchMovies={this.searchMovies}
+        loadMoreMovies={this.loadMoreMovies}
+      />
+    );
+  }
 }
+
+const mapStateToProps = (state) => {
+  return state.home;
+};
+
+//if state has to be send further to the child, bindActionCreators should be used
+const mapDispatchToProps = {
+  getPopularMovies,
+  showLoadingSpinner,
+  searchMovies,
+  clearMovies,
+  loadMoreMovies,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeContainer);

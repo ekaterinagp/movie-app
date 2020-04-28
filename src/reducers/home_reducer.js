@@ -20,8 +20,7 @@ export default function (state = defaultState, action) {
     case GET_POPULAR_MOVIES:
       return {
         ...state,
-        movies: action.payload,
-        results,
+        movies: action.payload.results,
         heroImage: state.heroImage || action.payload.results[0],
         loading: false,
         currentPage: action.payload.page,

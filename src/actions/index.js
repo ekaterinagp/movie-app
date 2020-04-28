@@ -1,4 +1,4 @@
-import { API_URL, API_KET } from "../config";
+import { API_URL, API_KEY } from "../config";
 
 //action types for Home
 

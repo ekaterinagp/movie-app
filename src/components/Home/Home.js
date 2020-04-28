@@ -1,15 +1,23 @@
 import React from "react";
-import { IMAGE_BASE_URL, POSTER_SIZE, BACKDROP_SIZE } from "../../config";
 import HeroImage from "../elements/HeroImage/HeroImage";
 import SearchBar from "../elements/SearchBar/SearchBar";
 import FourColGrid from "../elements/FourColGrid/FourColGrid";
 import MovieThumb from "../elements/MovieThumb/MovieThumb";
 import LoadMoreBtn from "../elements/LoadMoreBtn/LoadMoreBtn";
 import Spinner from "../elements/Spinner/Spinner";
+import { IMAGE_BASE_URL, POSTER_SIZE, BACKDROP_SIZE } from "../../config";
 import "./Home.css";
 
-//turend into presentational component, no logic, just UI
-const Home = () => (
+const Home = ({
+  movies,
+  heroImage,
+  loading,
+  currentPage,
+  totalPages,
+  searchTerm,
+  searchMovies,
+  loadMoreMovies,
+}) => (
   <div className="rmdb-home">
     {heroImage ? (
       <div>
@@ -18,7 +26,7 @@ const Home = () => (
           title={heroImage.original_title}
           text={heroImage.overview}
         />
-        <SearchBar callback={this.searchItems} />
+        <SearchBar callback={searchMovies} />
       </div>
     ) : null}
     <div className="rmdb-home-grid">
@@ -42,7 +50,7 @@ const Home = () => (
       </FourColGrid>
       {loading ? <Spinner /> : null}
       {currentPage <= totalPages && !loading ? (
-        <LoadMoreBtn text="Load More" onClick={this.loadMoreItems} />
+        <LoadMoreBtn text="Load More" onClick={loadMoreMovies} />
       ) : null}
     </div>
   </div>
