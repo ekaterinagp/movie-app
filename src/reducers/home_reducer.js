@@ -34,7 +34,7 @@ export default function (state = defaultState, action) {
         movies: [...state.movies, ...action.payload.results],
         loading: false,
         currentPage: action.payload.page,
-        totalPage: action.payload.total_pages,
+        totalPages: action.payload.total_pages,
       };
     case SEARCH_MOVIES:
       return {
@@ -55,5 +55,7 @@ export default function (state = defaultState, action) {
         ...state,
         loading: true,
       };
+    default:
+      return state;
   }
 }
