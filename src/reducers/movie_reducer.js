@@ -2,7 +2,7 @@ import {
   GET_MOVIE,
   SHOW_LOADING_SPINNER,
   CLEAR_MOVIE,
-  // SET_MOVIE_PERSISTED_STATE,
+  SET_MOVIE_PERSISTED_STATE,
 } from "../actions";
 
 const defaultState = {
@@ -14,11 +14,11 @@ const defaultState = {
 
 export default function (state = defaultState, action) {
   switch (action.type) {
-    // case SET_MOVIE_PERSISTED_STATE:
-    //   return {
-    //     ...state,
-    //     ...action.payload,
-    //   };
+    case SET_MOVIE_PERSISTED_STATE:
+      return {
+        ...state,
+        ...action.payload,
+      };
     case GET_MOVIE:
       return {
         ...state,

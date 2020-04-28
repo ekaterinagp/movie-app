@@ -6,13 +6,27 @@ import {
   searchMovies,
   clearMovies,
   loadMoreMovies,
+  setPopularPersistedState,
 } from "../actions";
 
 import Home from "../components/Home/Home";
 
 class HomeContainer extends Component {
   componentDidMount() {
-    this.getMovies();
+    if (sessionStorage.getItem("HomeState")) {
+      const home = JSON.parse(sessionStorage.getItem("HomeState"));
+      this.props.setPopularPersistedState(home);
+    } else {
+      this.getMovies();
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.props.movies.length > 0) {
+      if (this.props.searchTerm === "") {
+        sessionStorage.setItem("HomeState", JSON.stringify(this.props));
+      }
+    }
   }
 
   getMovies = () => {
@@ -54,6 +68,7 @@ const mapDispatchToProps = {
   searchMovies,
   clearMovies,
   loadMoreMovies,
+  setPopularPersistedState,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeContainer);
