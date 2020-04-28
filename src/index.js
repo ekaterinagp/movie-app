@@ -10,6 +10,9 @@ import "./index.css";
 import App from "./components/App/App";
 const storeWithMiddleware = applyMiddleware(promiseMiddleware)(createStore);
 
+//store can also be created the following way, instead of in reducers, but in this case remember to bring up defualt state
+// const store=createStore(reducers, defaultState, applyMiddleware(promiseMiddleware);
+
 ReactDOM.render(
   <Provider store={storeWithMiddleware(reducers)}>
     <App />
